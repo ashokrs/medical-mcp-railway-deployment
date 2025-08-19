@@ -5,12 +5,12 @@
   "main": "build/mcp/index.js",
   "type": "module",
   "scripts": {
-    "start": "PORT=3001 node build/web/server.js",
+    "start": "node build/web/server.js",
     "start:mcp": "node build/mcp/index.js",
-    "start:web": "PORT=3001 node build/web/server.js",
+    "start:web": "node build/web/server.js",
     "dev": "nodemon --exec tsx src/web/server.ts",
     "dev:mcp": "nodemon --exec tsx src/mcp/index.ts",
-    "dev:web": "PORT=3001 nodemon --exec tsx src/web/server.ts",
+    "dev:web": "nodemon --exec tsx src/web/server.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "test": "jest",
@@ -19,7 +19,7 @@
     "lint:fix": "eslint src/**/*.{js,ts} --fix",
     "format": "prettier --write \"src/**/*.{js,ts,json}\"",
     "clean": "rm -rf build",
-    "health-check": "curl -f http://localhost:3000/health || exit 1",
+    "health-check": "curl -f http://localhost:$PORT/health || exit 1",
     "audit-fix": "npm audit fix"
   },
   "bin": {
