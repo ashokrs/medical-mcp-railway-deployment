@@ -1,5 +1,5 @@
 // Improved Service Worker for Medical MCP Web Interface
-const CACHE_NAME = 'medical-mcp-v1';
+const CACHE_NAME = 'medical-mcp-v2'; // Changed from v1 to v2 to force cache refresh
 const STATIC_FILES = [
     '/',
     '/health'
