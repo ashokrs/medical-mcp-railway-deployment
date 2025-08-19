@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "medical-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/ashok/Code/apps/mcp/medical-mcp-service/build/mcp/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

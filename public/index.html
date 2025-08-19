@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Research Hub - Advanced Medical Information Platform</title>
+    <meta name="description" content="Comprehensive medical research platform with drug information, health statistics, and literature search">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --border: #475569;
+            --glass-bg: rgba(30, 41, 59, 0.8);
+            --glass-border: rgba(148, 163, 184, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #1a202c 50%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(-10px) rotate(-1deg); }
+        }
+
+        /* Glass morphism effects */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(148, 163, 184, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-light);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero section */
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            animation: slideInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tool grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tool-card {
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-card.active {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .drug-search .tool-icon {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+        }
+
+        .health-stats .tool-icon {
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+        }
+
+        .literature .tool-icon {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+
+        .nomenclature .tool-icon {
+            background: linear-gradient(135deg, #f59e0b, #eab308);
+        }
+
+        .breast-cancer .tool-icon {
+            background: linear-gradient(135deg, #ec4899, #be185d);
+        }
+
+        .tool-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Search form */
+        .search-form {
+            display: none;
+            margin-top: 2rem;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .search-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 1rem;
+            border: 3px solid var(--glass-border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results */
+        .results {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .results.active {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .results-count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .results-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .result-item {
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.3s ease;
+        }
+
+        .result-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .result-item:hover {
+            background: rgba(30, 41, 59, 0.8);
+            transform: translateX(8px);
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .result-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .result-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .result-meta i {
+            color: var(--primary-light);
+        }
+
+        .result-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .result-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-light);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .tag.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .tag.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        /* Error messages */
+        .error {
+            padding: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            color: var(--error);
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error.active {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Breast cancer dashboard - FIXED */
+        .breast-cancer-dashboard {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+            padding: 2rem;
+        }
+
+        .breast-cancer-dashboard.active {
+            display: grid !important;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .dashboard-card {
+            padding: 1.5rem;
+            min-height: 300px;
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+        }
+
+        .dashboard-card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dashboard-card h4 i {
+            color: var(--primary-light);
+        }
+
+        .dashboard-card .btn {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .dashboard-card > div[id$="-results"] {
+            min-height: 100px;
+            margin-top: 1rem;
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            z-index: 1000;
+            display: none;
+        }
+
+        .status-indicator.online {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            display: block;
+        }
+
+        .status-indicator.offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: block;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 0 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .tool-card {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .breast-cancer-dashboard {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .tool-card {
+                padding: 1rem;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus styles */
+        .tool-card:focus-visible,
+        .btn:focus-visible,
+        .form-control:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            :root {
+                --text-primary: #ffffff;
+                --text-secondary: #e2e8f0;
+                --border: #64748b;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Status indicator -->
+    <div id="status-indicator" class="status-indicator">
+        <i class="fas fa-circle"></i> <span id="status-text">Connecting...</span>
+    </div>
+
+    <header class="header glass">
+        <nav class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-dna"></i>
+                Medical Research Hub
+            </a>
+            <ul class="nav-links">
+                <li><a href="#tools">Tools</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#api">API</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Advanced Medical Information Platform</h1>
+            <p>Access comprehensive medical data from FDA, WHO, PubMed, and more through our unified research interface</p>
+        </section>
+
+        <section id="tools" class="tools-section">
+            <div class="tools-grid">
+                <div class="tool-card glass-card drug-search" onclick="selectTool('drug-search')" tabindex="0">
+                    <div class="tool-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h3>Drug Information</h3>
+                    <p>Search FDA database for comprehensive drug information including brand names, generic names, and safety data</p>
+                </div>
+
+                <div class="tool-card glass-card health-stats" onclick="selectTool('health-stats')" tabindex="0">
+                    <div class="tool-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Health Statistics</h3>
+                    <p>Access WHO Global Health Observatory data for health indicators and statistics worldwide</p>
+                </div>
+
+                <div class="tool-card glass-card literature" onclick="selectTool('literature')" tabindex="0">
+                    <div class="tool-icon">
+                        <i class="fas fa-book-medical"></i>
+                    </div>
+                    <h3>Medical Literature</h3>
+                    <p>Search PubMed database for the latest medical research articles and clinical studies</p>
+                </div>
+
+                <div class="tool-card glass-card nomenclature" onclick="selectTool('nomenclature')" tabindex="0">
+                    <div class="tool-icon">
+                        <i class="fas fa-list-alt"></i>
+                    </div>
+                    <h3>Drug Nomenclature</h3>
+                    <p>Standardized drug names and codes from RxNorm database for clinical integration</p>
+                </div>
+
+                <div class="tool-card glass-card breast-cancer" onclick="selectTool('breast-cancer')" tabindex="0">
+                    <div class="tool-icon">
+                        <i class="fas fa-ribbon"></i>
+                    </div>
+                    <h3>Breast Cancer Research</h3>
+                    <p>Specialized dashboard for breast cancer drugs, statistics, and research literature</p>
+                </div>
+            </div>
+
+            <!-- Drug Search Form -->
+            <form id="drug-search-form" class="search-form glass-card">
+                <h3><i class="fas fa-pills"></i> Drug Information Search</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="drug-query">Drug Name (Brand or Generic)</label>
+                        <input type="text" id="drug-query" class="form-control" placeholder="e.g., Tylenol, ibuprofen, aspirin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="drug-limit">Results Limit</label>
+                        <select id="drug-limit" class="form-control">
+                            <option value="5">5 results</option>
+                            <option value="10" selected>10 results</option>
+                            <option value="20">20 results</option>
+                            <option value="50">50 results</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+
+            <!-- Health Statistics Form -->
+            <form id="health-stats-form" class="search-form glass-card">
+                <h3><i class="fas fa-chart-line"></i> Health Statistics Search</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="health-indicator">Health Indicator</label>
+                        <input type="text" id="health-indicator" class="form-control" placeholder="e.g., Life expectancy, breast cancer incidence" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="health-country">Country (Optional)</label>
+                        <input type="text" id="health-country" class="form-control" placeholder="e.g., USA, GBR, global">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+
+            <!-- Literature Search Form -->
+            <form id="literature-form" class="search-form glass-card">
+                <h3><i class="fas fa-book-medical"></i> Medical Literature Search</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="literature-query">Research Topic</label>
+                        <input type="text" id="literature-query" class="form-control" placeholder="e.g., COVID-19 treatment, breast cancer immunotherapy" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="literature-limit">Max Results</label>
+                        <select id="literature-limit" class="form-control">
+                            <option value="5">5 articles</option>
+                            <option value="10" selected>10 articles</option>
+                            <option value="15">15 articles</option>
+                            <option value="20">20 articles</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+
+            <!-- Nomenclature Search Form -->
+            <form id="nomenclature-form" class="search-form glass-card">
+                <h3><i class="fas fa-list-alt"></i> Drug Nomenclature Search</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nomenclature-query">Drug Name</label>
+                        <input type="text" id="nomenclature-query" class="form-control" placeholder="e.g., aspirin, acetaminophen" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+
+            <!-- Breast Cancer Dashboard -->
+            <div id="breast-cancer-dashboard" class="breast-cancer-dashboard glass-card">
+                <div class="dashboard-card glass-card">
+                    <h4><i class="fas fa-pills"></i> Common Treatments</h4>
+                    <button onclick="loadBreastCancerDrugs()" class="btn btn-primary">Load Drug Information</button>
+                    <div id="bc-drugs-results"></div>
+                </div>
+                <div class="dashboard-card glass-card">
+                    <h4><i class="fas fa-chart-bar"></i> Statistics & Epidemiology</h4>
+                    <button onclick="loadBreastCancerStats()" class="btn btn-primary">Load Statistics</button>
+                    <div id="bc-stats-results"></div>
+                </div>
+                <div class="dashboard-card glass-card">
+                    <h4><i class="fas fa-microscope"></i> Latest Research</h4>
+                    <button onclick="loadBreastCancerResearch()" class="btn btn-primary">Load Research</button>
+                    <div id="bc-research-results"></div>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Searching medical databases...</p>
+            </div>
+
+            <!-- Error -->
+            <div id="error" class="error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="error-message"></span>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="results glass-card">
+                <div class="results-header">
+                    <h3 id="results-title" class="results-title">Search Results</h3>
+                    <span id="results-count" class="results-count"></span>
+                </div>
+                <div id="results-grid" class="results-grid"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Global state
+        let currentTool = null;
+        let isLoading = false;
+        let apiConnected = false;
+
+        // DOM elements
+        const toolCards = document.querySelectorAll('.tool-card');
+        const searchForms = document.querySelectorAll('.search-form');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const results = document.getElementById('results');
+        const breastCancerDashboard = document.getElementById('breast-cancer-dashboard');
+        const statusIndicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
+
+        // Health check function to test connectivity
+        async function healthCheck() {
+            try {
+                const currentPort = window.location.port || '3001';
+                const baseUrl = `${window.location.protocol}//${window.location.hostname}:${currentPort}`;
+                
+                console.log(`🔍 Testing API connection to: ${baseUrl}/health`);
+                
+                const response = await fetch(`${baseUrl}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ API connection successful:', data);
+                    updateConnectionStatus(true);
+                    return true;
+                } else {
+                    console.error('❌ Health check failed:', response.status);
+                    updateConnectionStatus(false);
+                    return false;
+                }
+            } catch (err) {
+                console.error('❌ API connection failed:', err);
+                updateConnectionStatus(false);
+                return false;
+            }
+        }
+
+        // Update connection status indicator
+        function updateConnectionStatus(connected) {
+            apiConnected = connected;
+            if (connected) {
+                statusIndicator.className = 'status-indicator online';
+                statusText.innerHTML = '<i class="fas fa-circle"></i> API Connected';
+            } else {
+                statusIndicator.className = 'status-indicator offline';
+                statusText.innerHTML = '<i class="fas fa-circle"></i> API Disconnected';
+            }
+        }
+
+        // API request helper with improved error handling
+        async function apiRequest(endpoint, data) {
+            try {
+                const currentPort = window.location.port || '3001';
+                const baseUrl = `${window.location.protocol}//${window.location.hostname}:${currentPort}`;
+                const url = `${baseUrl}/api/${endpoint}`;
+                
+                console.log(`🌐 Making API request to: ${url}`);
+                console.log('📝 Request data:', data);
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                console.log(`📊 Response status: ${response.status}`);
+
+                if (!response.ok) {
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch (e) {
+                        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+                    }
+                    throw new Error(errorData.message || `Request failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('✅ API response:', result);
+                return result;
+            } catch (err) {
+                console.error('❌ API Error:', err);
+                throw err;
+            }
+        }
+
+        // Tool selection
+        function selectTool(toolType) {
+            if (isLoading) return;
+
+            console.log(`🔧 Selecting tool: ${toolType}`);
+
+            // Update active tool card
+            toolCards.forEach(card => card.classList.remove('active'));
+            document.querySelector(`.${toolType}`).classList.add('active');
+
+            // Hide all forms and show selected
+            searchForms.forEach(form => form.classList.remove('active'));
+            breastCancerDashboard.classList.remove('active');
+            
+            if (toolType === 'breast-cancer') {
+                console.log('📊 Showing breast cancer dashboard');
+                breastCancerDashboard.classList.add('active');
+            } else {
+                const formElement = document.getElementById(`${toolType}-form`);
+                if (formElement) {
+                    formElement.classList.add('active');
+                } else {
+                    console.error(`❌ Form not found: ${toolType}-form`);
+                }
+            }
+
+            // Clear previous results
+            clearResults();
+            currentTool = toolType;
+        }
+
+        // Show loading state
+        function showLoading() {
+            isLoading = true;
+            loading.classList.add('active');
+            clearResults();
+            hideError();
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            isLoading = false;
+            loading.classList.remove('active');
+        }
+
+        // Show error
+        function showError(message) {
+            console.error('🚨 Showing error:', message);
+            error.classList.add('active');
+            document.getElementById('error-message').textContent = message;
+        }
+
+        // Hide error
+        function hideError() {
+            error.classList.remove('active');
+        }
+
+        // Clear results
+        function clearResults() {
+            results.classList.remove('active');
+            document.getElementById('results-grid').innerHTML = '';
+        }
+
+        // Show results
+        function showResults(title, data, count) {
+            document.getElementById('results-title').textContent = title;
+            document.getElementById('results-count').textContent = count ? `${count} results found` : '';
+            results.classList.add('active');
+        }
+
+        // Format drug results
+        function formatDrugResults(data) {
+            const grid = document.getElementById('results-grid');
+            
+            if (!data.drugs || data.drugs.length === 0) {
+                grid.innerHTML = '<div class="result-item glass-card"><p>No drugs found for this search.</p></div>';
+                return;
+            }
+
+            grid.innerHTML = data.drugs.map(drug => `
+                <div class="result-item glass-card">
+                    <h4 class="result-title">${drug.brandName}</h4>
+                    <div class="result-meta">
+                        <span><i class="fas fa-prescription-bottle"></i> Generic: ${drug.genericName}</span>
+                        <span><i class="fas fa-industry"></i> ${drug.manufacturer}</span>
+                        <span><i class="fas fa-route"></i> ${drug.route}</span>
+                        <span><i class="fas fa-tablets"></i> ${drug.dosageForm}</span>
+                    </div>
+                    <div class="result-description">
+                        <strong>Purpose:</strong> ${drug.purpose}
+                    </div>
+                    <div class="result-tags">
+                        ${drug.ndc ? `<span class="tag">NDC: ${drug.ndc}</span>` : ''}
+                        <span class="tag">Updated: ${drug.lastUpdated}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Format health statistics results
+        function formatHealthResults(data) {
+            const grid = document.getElementById('results-grid');
+            
+            if (!data.statistics || data.statistics.length === 0) {
+                grid.innerHTML = '<div class="result-item glass-card"><p>No statistics found for this indicator.</p></div>';
+                return;
+            }
+
+            grid.innerHTML = data.statistics.map(stat => `
+                <div class="result-item glass-card">
+                    <h4 class="result-title">${stat.indicator}</h4>
+                    <div class="result-meta">
+                        <span><i class="fas fa-globe"></i> ${stat.country}</span>
+                        <span><i class="fas fa-calendar"></i> ${stat.year}</span>
+                        <span><i class="fas fa-chart-bar"></i> ${stat.value}</span>
+                        ${stat.unit ? `<span><i class="fas fa-ruler"></i> ${stat.unit}</span>` : ''}
+                    </div>
+                    <div class="result-tags">
+                        <span class="tag success">WHO Data</span>
+                        ${stat.numericValue ? `<span class="tag">Value: ${stat.numericValue}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Format literature results
+        function formatLiteratureResults(data) {
+            const grid = document.getElementById('results-grid');
+            
+            if (!data.articles || data.articles.length === 0) {
+                grid.innerHTML = '<div class="result-item glass-card"><p>No articles found for this search.</p></div>';
+                return;
+            }
+
+            grid.innerHTML = data.articles.map(article => `
+                <div class="result-item glass-card">
+                    <h4 class="result-title">
+                        ${article.url ? `<a href="${article.url}" target="_blank" style="color: inherit; text-decoration: none;">${article.title}</a>` : article.title}
+                    </h4>
+                    <div class="result-meta">
+                        <span><i class="fas fa-book"></i> ${article.journal}</span>
+                        <span><i class="fas fa-calendar"></i> ${article.publicationYear}</span>
+                        ${article.pmid ? `<span><i class="fas fa-link"></i> PMID: ${article.pmid}</span>` : ''}
+                        ${article.citedBy ? `<span><i class="fas fa-quote-left"></i> Cited: ${article.citedBy}</span>` : ''}
+                    </div>
+                    <div class="result-description">
+                        ${article.abstract || article.snippet || 'No abstract available'}
+                    </div>
+                    <div class="result-tags">
+                        <span class="tag">${article.source || 'PubMed'}</span>
+                        ${article.authors ? `<span class="tag">Authors Available</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Format nomenclature results
+        function formatNomenclatureResults(data) {
+            const grid = document.getElementById('results-grid');
+            
+            if (!data.drugs || data.drugs.length === 0) {
+                grid.innerHTML = '<div class="result-item glass-card"><p>No nomenclature found for this drug.</p></div>';
+                return;
+            }
+
+            grid.innerHTML = data.drugs.map(drug => `
+                <div class="result-item glass-card">
+                    <h4 class="result-title">${drug.name}</h4>
+                    <div class="result-meta">
+                        <span><i class="fas fa-code"></i> RxCUI: ${drug.rxcui}</span>
+                        <span><i class="fas fa-language"></i> ${drug.language}</span>
+                        <span><i class="fas fa-tag"></i> ${drug.tty}</span>
+                    </div>
+                    <div class="result-description">
+                        <strong>Synonym:</strong> ${drug.synonym}
+                    </div>
+                    <div class="result-tags">
+                        <span class="tag">RxNorm</span>
+                        <span class="tag">Standardized</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Form handlers
+        document.getElementById('drug-search-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const query = document.getElementById('drug-query').value;
+            const limit = parseInt(document.getElementById('drug-limit').value);
+
+            console.log(`🔍 Drug search: "${query}" (limit: ${limit})`);
+            showLoading();
+            
+            try {
+                const response = await apiRequest('drugs/search', { query, limit });
+                hideLoading();
+                
+                if (response.success) {
+                    showResults(`Drug Search: "${query}"`, response.data, response.data.total);
+                    formatDrugResults(response.data);
+                } else {
+                    showError(response.error || 'Failed to search for drugs');
+                }
+            } catch (err) {
+                hideLoading();
+                showError(err.message);
+            }
+        });
+
+        document.getElementById('health-stats-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const indicator = document.getElementById('health-indicator').value;
+            const country = document.getElementById('health-country').value;
+
+            console.log(`📊 Health stats search: "${indicator}" in ${country || 'global'}`);
+            showLoading();
+            
+            try {
+                const response = await apiRequest('health/statistics', { 
+                    indicator, 
+                    country: country || undefined 
+                });
+                hideLoading();
+                
+                if (response.success) {
+                    showResults(`Health Statistics: "${indicator}"`, response.data, response.data.total);
+                    formatHealthResults(response.data);
+                } else {
+                    showError(response.error || 'Failed to get health statistics');
+                }
+            } catch (err) {
+                hideLoading();
+                showError(err.message);
+            }
+        });
+
+        document.getElementById('literature-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const query = document.getElementById('literature-query').value;
+            const maxResults = parseInt(document.getElementById('literature-limit').value);
+
+            console.log(`📚 Literature search: "${query}" (max: ${maxResults})`);
+            showLoading();
+            
+            try {
+                const response = await apiRequest('literature/search', { 
+                    query, 
+                    max_results: maxResults 
+                });
+                hideLoading();
+                
+                if (response.success) {
+                    showResults(`Literature Search: "${query}"`, response.data, response.data.total);
+                    formatLiteratureResults(response.data);
+                } else {
+                    showError(response.error || 'Failed to search literature');
+                }
+            } catch (err) {
+                hideLoading();
+                showError(err.message);
+            }
+        });
+
+        document.getElementById('nomenclature-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const query = document.getElementById('nomenclature-query').value;
+
+            console.log(`🏷️  Nomenclature search: "${query}"`);
+            showLoading();
+            
+            try {
+                const response = await apiRequest('drugs/nomenclature', { query });
+                hideLoading();
+                
+                if (response.success) {
+                    showResults(`Drug Nomenclature: "${query}"`, response.data, response.data.total);
+                    formatNomenclatureResults(response.data);
+                } else {
+                    showError(response.error || 'Failed to search nomenclature');
+                }
+            } catch (err) {
+                hideLoading();
+                showError(err.message);
+            }
+        });
+
+        // Breast cancer dashboard functions
+        async function loadBreastCancerDrugs() {
+            const container = document.getElementById('bc-drugs-results');
+            container.innerHTML = '<div class="spinner" style="width: 20px; height: 20px;"></div>';
+            
+            console.log('💊 Loading breast cancer drugs...');
+            
+            try {
+                const response = await apiRequest('breast-cancer/drugs', {});
+                
+                if (response.success) {
+                    if (response.data.length > 0) {
+                        // Data found - show drug information
+                        container.innerHTML = response.data.slice(0, 3).map(drugData => `
+                            <div class="result-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(37, 99, 235, 0.05); border-radius: 8px;">
+                                <h5 style="margin: 0 0 0.5rem 0; color: var(--text-primary);">${drugData.query}</h5>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                                    ${drugData.total} drugs found
+                                </div>
+                                <div style="margin-top: 0.5rem;">
+                                    <span class="tag" style="background: rgba(37, 99, 235, 0.1); color: var(--primary-light); padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.7rem;">
+                                        FDA Database
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        // No data found - graceful message
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                <i class="fas fa-pills" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <p style="margin: 0; font-size: 0.9rem;">
+                                    No breast cancer drug information available at the moment.
+                                </p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
+                                    FDA database may be temporarily unavailable or search terms need adjustment.
+                                </p>
+                                <button onclick="loadBreastCancerDrugs()" class="btn btn-secondary" style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
+                                    <i class="fas fa-redo"></i> Try Again
+                                </button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    // API returned success: false
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--error);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p style="margin: 0; font-size: 0.9rem;">Unable to load drug information</p>
+                            <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
+                                ${response.error || 'Unknown error occurred while fetching FDA data'}
+                            </p>
+                            <button onclick="loadBreastCancerDrugs()" class="btn btn-secondary" style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
+                                <i class="fas fa-redo"></i> Retry
+                            </button>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error('❌ Error loading breast cancer drugs:', err);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--error);">
+                        <i class="fas fa-wifi" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p style="margin: 0; font-size: 0.9rem;">Connection Error</p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
+                            Unable to connect to the medical database
+                        </p>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.75rem; opacity: 0.5;">
+                            ${err.message}
+                        </p>
+                        <button onclick="loadBreastCancerDrugs()" class="btn btn-secondary" style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadBreastCancerStats() {
+            const container = document.getElementById('bc-stats-results');
+            container.innerHTML = '<div class="spinner" style="width: 20px; height: 20px;"></div>';
+            
+            console.log('📊 Loading breast cancer statistics...');
+            
+            try {
+                const response = await apiRequest('breast-cancer/statistics', {});
+                
+                if (response.success) {
+                    if (response.data.length > 0) {
+                        // Data found - show statistics
+                        container.innerHTML = response.data.slice(0, 3).map(statData => `
+                            <div class="result-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(16, 185, 129, 0.05); border-radius: 8px;">
+                                <h5 style="margin: 0 0 0.5rem 0; color: var(--text-primary);">${statData.indicator}</h5>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                                    ${statData.total} data points found
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        // No data found - graceful message
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                <i class="fas fa-chart-bar" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <p style="margin: 0; font-size: 0.9rem;">
+                                    No breast cancer statistics available at the moment.
+                                </p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
+                                    WHO data may be temporarily unavailable or the search terms may need adjustment.
+                                </p>
+                            </div>
+                        `;
+                    }
+                } else {
+                    // API returned success: false
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--error);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p style="margin: 0; font-size: 0.9rem;">Unable to load statistics</p>
+                            <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
+                                ${response.error || 'Unknown error occurred'}
+                            </p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error('❌ Error loading breast cancer stats:', err);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--error);">
+                        <i class="fas fa-wifi" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p style="margin: 0; font-size: 0.9rem;">Connection Error</p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
+                            ${err.message}
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadBreastCancerResearch() {
+            const container = document.getElementById('bc-research-results');
+            container.innerHTML = '<div class="spinner" style="width: 20px; height: 20px;"></div>';
+            
+            console.log('🔬 Loading breast cancer research...');
+            
+            try {
+                const response = await apiRequest('breast-cancer/research', {});
+                
+                if (response.success) {
+                    if (response.data.length > 0) {
+                        // Data found - show research articles
+                        container.innerHTML = response.data.slice(0, 3).map(researchData => `
+                            <div class="result-item" style="margin: 0.5rem 0; padding: 1rem; background: rgba(139, 92, 246, 0.05); border-radius: 8px;">
+                                <h5 style="margin: 0 0 0.5rem 0; color: var(--text-primary);">${researchData.query}</h5>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                    ${researchData.total} articles found
+                                </div>
+                                <div style="margin-top: 0.5rem;">
+                                    <span class="tag" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.7rem; margin-right: 0.5rem;">
+                                        PubMed
+                                    </span>
+                                    <span class="tag" style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.7rem;">
+                                        Latest Research
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        // No data found - graceful message
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                <i class="fas fa-microscope" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <p style="margin: 0; font-size: 0.9rem;">
+                                    No breast cancer research articles available at the moment.
+                                </p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
+                                    PubMed database may be temporarily unavailable or research queries need refinement.
+                                </p>
+                                <button onclick="loadBreastCancerResearch()" class="btn btn-secondary" style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
+                                    <i class="fas fa-redo"></i> Try Again
+                                </button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    // API returned success: false
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--error);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p style="margin: 0; font-size: 0.9rem;">Unable to load research articles</p>
+                            <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
+                                ${response.error || 'Unknown error occurred while fetching PubMed data'}
+                            </p>
+                            <button onclick="loadBreastCancerResearch()" class="btn btn-secondary" style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
+                                <i class="fas fa-redo"></i> Retry
+                            </button>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error('❌ Error loading breast cancer research:', err);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--error);">
+                        <i class="fas fa-wifi" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p style="margin: 0; font-size: 0.9rem;">Connection Error</p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
+                            Unable to connect to the research database
+                        </p>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.75rem; opacity: 0.5;">
+                            ${err.message}
+                        </p>
+                        <button onclick="loadBreastCancerResearch()" class="btn btn-secondary" style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                clearResults();
+                hideError();
+            }
+        });
+
+        // Tool card keyboard navigation
+        toolCards.forEach(card => {
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const toolType = Array.from(card.classList).find(cls => 
+                        ['drug-search', 'health-stats', 'literature', 'nomenclature', 'breast-cancer'].includes(cls)
+                    );
+                    selectTool(toolType);
+                }
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Medical Research Hub initialized');
+            
+            // Test API connection
+            await healthCheck();
+            
+            // Auto-select first tool
+            selectTool('drug-search');
+            
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Service worker registration for PWA capabilities
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

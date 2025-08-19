@@ -1,0 +1,19 @@
+# railway.toml - Railway deployment configuration
+[build]
+  builder = "dockerfile"
+  dockerfilePath = "Dockerfile"
+
+[deploy]
+  startCommand = "npm start"
+  healthcheckPath = "/health"
+  healthcheckTimeout = 300
+  restartPolicyType = "on_failure"
+  restartPolicyMaxRetries = 3
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+  
+# Environment variables to set in Railway dashboard:
+# PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+# PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
