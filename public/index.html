@@ -946,8 +946,10 @@
         // Health check function to test connectivity
         async function healthCheck() {
             try {
-                const currentPort = window.location.port || '3001';
-                const baseUrl = `${window.location.protocol}//${window.location.hostname}:${currentPort}`;
+                // For production (Railway), don't add port. For development, use port if present.
+                const baseUrl = window.location.port 
+            ? `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
+            : `${window.location.protocol}//${window.location.hostname}`;
                 
                 console.log(`🔍 Testing API connection to: ${baseUrl}/health`);
                 
@@ -984,8 +986,10 @@
         // API request helper with improved error handling
         async function apiRequest(endpoint, data) {
             try {
-                const currentPort = window.location.port || '3001';
-                const baseUrl = `${window.location.protocol}//${window.location.hostname}:${currentPort}`;
+                // For production (Railway), don't add port. For development, use port if present.
+                const baseUrl = window.location.port 
+            ? `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
+            : `${window.location.protocol}//${window.location.hostname}`;
                 const url = `${baseUrl}/api/${endpoint}`;
                 
                 console.log(`🌐 Making API request to: ${url}`);
