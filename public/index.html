@@ -944,12 +944,26 @@
         const statusText = document.getElementById('status-text');
 
         // Health check function to test connectivity
+        // Fixed health check function to properly handle Railway deployment
         async function healthCheck() {
             try {
-                // For production (Railway), don't add port. For development, use port if present.
-                const baseUrl = window.location.port 
-            ? `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
-            : `${window.location.protocol}//${window.location.hostname}`;
+                // Determine base URL - Railway doesn't need port numbers
+                let baseUrl;
+                
+                // Check if we're on Railway (production)
+                if (window.location.hostname.includes('railway.app')) {
+                    baseUrl = `${window.location.protocol}//${window.location.hostname}`;
+                }
+                // Check if we're on localhost (development)
+                else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    baseUrl = window.location.port 
+                        ? `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
+                        : `${window.location.protocol}//${window.location.hostname}:3000`;
+                }
+                // Default fallback
+                else {
+                    baseUrl = `${window.location.protocol}//${window.location.hostname}`;
+                }
                 
                 console.log(`🔍 Testing API connection to: ${baseUrl}/health`);
                 
@@ -984,12 +998,27 @@
         }
 
         // API request helper with improved error handling
+        // Fixed API request helper with improved error handling
         async function apiRequest(endpoint, data) {
             try {
-                // For production (Railway), don't add port. For development, use port if present.
-                const baseUrl = window.location.port 
-            ? `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
-            : `${window.location.protocol}//${window.location.hostname}`;
+                // Determine base URL - Railway doesn't need port numbers
+                let baseUrl;
+                
+                // Check if we're on Railway (production)
+                if (window.location.hostname.includes('railway.app')) {
+                    baseUrl = `${window.location.protocol}//${window.location.hostname}`;
+                }
+                // Check if we're on localhost (development)
+                else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    baseUrl = window.location.port 
+                        ? `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
+                        : `${window.location.protocol}//${window.location.hostname}:3000`;
+                }
+                // Default fallback
+                else {
+                    baseUrl = `${window.location.protocol}//${window.location.hostname}`;
+                }
+                
                 const url = `${baseUrl}/api/${endpoint}`;
                 
                 console.log(`🌐 Making API request to: ${url}`);

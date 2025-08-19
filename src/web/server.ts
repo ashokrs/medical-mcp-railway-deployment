@@ -26,7 +26,14 @@ app.use(helmet({
             scriptSrcAttr: ["'unsafe-inline'"],
             fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
             imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com", "https://fonts.gstatic.com"], // ADDED EXTERNAL DOMAINS
+            connectSrc: [
+                "'self'", 
+                "https://fonts.googleapis.com", 
+                "https://cdnjs.cloudflare.com", 
+                "https://fonts.gstatic.com",
+                "https://*.railway.app",  // Add Railway domains
+                "https://medical-mcp-railway-deployment-production.up.railway.app"  // Your specific domain
+            ],
             workerSrc: ["'self'"]
         }
     }
